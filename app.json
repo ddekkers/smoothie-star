@@ -1,13 +1,53 @@
 {
   "expo": {
-    "scheme": "acme",
-    "web": {
-      "bundler": "metro"
-    },
-    "plugins": [
-      "expo-router"
-    ],
     "name": "smoothie-star",
-    "slug": "smoothie-star"
+    "slug": "smoothie-star",
+    "version": "1.0.0",
+    "platforms": ["ios"],
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "smoothie-star",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ddekkers.smoothie-star",
+      "splash": {
+        "resizeMode": "cover",
+        "backgroundColor": "#f8f7f5"
+      },
+      "buildNumber": "4"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ddekkers.smoothiestar"
+    },
+    
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "Daniel Dekkers",
+            "project": "smoothie-star"
+          }
+        }
+      ]
+    },
+    "plugins": ["sentry-expo", "expo-router"],
+    "extra": {
+
+    }
   }
 }
