@@ -14,19 +14,19 @@ const LegalNoticeScreen: React.FC<ILegalNoticeScreenProps> = ({}) => {
       <Text style={{alignSelf: "center"}} h1>{Constants.expoConfig?.name}</Text>
       <ScrollView>
         <Text h3>Entwickler</Text>
-        <Row>
+        <Row style={{marginBottom: 10}}>
           <Text p style={styles.boldText}>
             Name:
           </Text>
           <Text p>Daniel Dekkers</Text>
         </Row>
-        <Row>
+        <Row style={{marginBottom: 10}}>
           <Text p style={styles.boldText}>
             Anschrift:
           </Text>
           <Text p>Am Brunnenhof 25, 22787 Hamburg, DE</Text>
         </Row>
-        <Row>
+        <Row style={{marginBottom: 10}}>
           <Text p style={styles.boldText}>
             E-Mail:
           </Text>
