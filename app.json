@@ -3,7 +3,9 @@
     "name": "smoothie-star",
     "slug": "smoothie-star",
     "version": "1.0.0",
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "smoothie-star",
@@ -16,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ddekkers.smoothie-star",
@@ -33,21 +37,29 @@
       },
       "package": "com.ddekkers.smoothiestar"
     },
-    
     "hooks": {
       "postPublish": [
         {
           "file": "sentry-expo/upload-sourcemaps",
           "config": {
-            "organization": "Daniel Dekkers",
+            "organization": "daniel-dekkers",
             "project": "smoothie-star"
           }
         }
       ]
     },
-    "plugins": ["sentry-expo", "expo-router"],
+    "plugins": [
+      "sentry-expo",
+      "expo-router"
+    ],
     "extra": {
-
-    }
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9274e72d-4156-4518-a924-e197147be2dd"
+      }
+    },
+    "owner": "daniel_dekkers"
   }
 }
