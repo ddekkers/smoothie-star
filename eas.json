@@ -4,14 +4,26 @@
     "promptToConfigurePushNotifications": false
   },
   "build": {
+    "local": {
+      "ios": {
+        "simulator": true
+      },
+      "channel": "local"
+    },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview"
     },
-    "production": {}
+    "production": {
+      "channel": "production",
+      "node": "16.13.0",
+      "autoIncrement": true
+    }
   },
   "submit": {
     "production": {}

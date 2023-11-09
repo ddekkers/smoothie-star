@@ -18,7 +18,8 @@ export const useScreenDimensions = () => {
     [width]
   );
   return {
-    width,
+    screenWidth: width,
+    screenHeight: height,
     getWidthPercent,
     getHeightPercent,
   };

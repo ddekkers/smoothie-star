@@ -1,20 +1,20 @@
-import moment from 'moment';
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
-import { Colors } from 'react-native-ui-lib';
-import Button from 'react-native-ui-lib/button';
-import ListItem from 'react-native-ui-lib/listItem';
-import Text from 'react-native-ui-lib/text';
-import View from 'react-native-ui-lib/view';
-import { usePrintData } from '../store/usePrintData';
-import { usePrintLog } from '../store/usePrintLog';
-import { LogByDate } from '../types';
-import { IconButton } from '../components/IconButton';
-import { PrintDialog } from '../components/PrintDialog';
+import moment from "moment";
+import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FlatList, StyleSheet } from "react-native";
+import { Colors } from "react-native-ui-lib";
+import Button from "react-native-ui-lib/button";
+import ListItem from "react-native-ui-lib/listItem";
+import Text from "react-native-ui-lib/text";
+import View from "react-native-ui-lib/view";
+import { usePrintData } from "../store/usePrintData";
+import { usePrintLog } from "../store/usePrintLog";
+import { LogByDate } from "../types";
+import { IconButton } from "../components/IconButton";
+import { PrintDialog } from "../components/PrintDialog";
+import { FloatingButton } from "../components/FloatingButton";
 
-
-export default function PrintLogList () {
+export default function PrintLogList() {
   const { reprintLog } = usePrintData();
   const { logs, purgePrintLogs } = usePrintLog();
   const [isPrintDialogVisible, setIsPrintDialogVisible] = useState(false);
@@ -26,7 +26,7 @@ export default function PrintLogList () {
       .sort((log1, log2) => log1.dateTime - log2.dateTime)
       .reverse()
       .reduce((logByDate: LogByDate, printLog) => {
-        const date = moment(printLog.dateTime).format('L');
+        const date = moment(printLog.dateTime).format("L");
         return {
           ...logByDate,
           [date]: [...(logByDate[date] || []), printLog].sort(
@@ -48,7 +48,15 @@ export default function PrintLogList () {
   );
   return (
     <>
-      <View style={{ width: '90%', height: '70%', marginTop: 20 }}>
+      <View
+        style={{
+          width: "100%",
+          height: "70%",
+          marginTop: 20,
+          paddingRight: 20,
+          paddingLeft: 20,
+        }}
+      >
         <FlatList
           data={Object.entries(logByDate)}
           keyExtractor={([date]) => date}
@@ -71,31 +79,41 @@ export default function PrintLogList () {
                     return (
                       <View
                         style={{
-                          justifyContent: 'space-between',
+                          justifyContent: "space-between",
                           flex: 1,
                           marginTop: 10,
-                          flexDirection: 'row',
+                          flexDirection: "row",
+                          minHeight: 150,
                         }}
-                        key={printLog.id}>
-                        <View style={{ maxWidth: '90%' }}>
+                        key={printLog.id}
+                      >
+                        <View
+                          style={{
+                            width: "90%",
+                            justifyContent: "center",
+                          }}
+                        >
                           <Text h3>
                             {printLog.items
                               .map(({ name }) => name)
                               .sort()
-                              .join(', ')}
+                              .join(", ")}
                           </Text>
                           {printLog.categories?.length > 0 && (
                             <Text p>
-                              {'Geschmack: ' +
+                              {"Geschmack: " +
                                 printLog.categories
                                   ?.map(({ name }) => name)
                                   .sort()
-                                  .join(', ')}
+                                  .join(", ")}
                             </Text>
                           )}
                         </View>
-                        <ListItem.Part right>
-                          <IconButton size={20} onPress={showPrintDialog} name={'printer'} />
+                        <ListItem.Part containerStyle={{ width: "10%" }} right>
+                          <FloatingButton
+                            icon={"print"}
+                            onPress={showPrintDialog}
+                          />
                         </ListItem.Part>
                         <PrintDialog
                           isVisible={isPrintDialogVisible}
@@ -114,17 +132,15 @@ export default function PrintLogList () {
           }}
         />
       </View>
-      <View
-        style={{
-          alignItems: 'center',
-          marginBottom: 180,
-        }}>
-        <Button style={{ backgroundColor: 'transparent' }} onPress={purgePrintLogs}>
-          <Text h3 color={Colors.alert}>
-            {'Alle löschen'}
-          </Text>
-        </Button>
-      </View>
+
+      <Button
+        style={{ backgroundColor: "transparent" }}
+        onPress={purgePrintLogs}
+      >
+        <Text h3 color={Colors.alert}>
+          {"Alle löschen"}
+        </Text>
+      </Button>
     </>
   );
-};
+}

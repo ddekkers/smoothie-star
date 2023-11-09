@@ -29,6 +29,9 @@ export class Item {
   @Column()
   contains_allergens: boolean;
 
+  @Column()
+  price_category: number
+
   // @ManyToMany(() => Allergen)
   // @JoinTable()
   // allergens: Array<Allergen>;

@@ -16,19 +16,21 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/9274e72d-4156-4518-a924-e197147be2dd"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
+      "isTabletOnly": true,
       "bundleIdentifier": "com.ddekkers.smoothie-star",
       "splash": {
         "resizeMode": "cover",
         "backgroundColor": "#f8f7f5"
       },
-      "buildNumber": "4"
+      "buildNumber": "6"
     },
     "android": {
       "adaptiveIcon": {
@@ -60,6 +62,9 @@
         "projectId": "9274e72d-4156-4518-a924-e197147be2dd"
       }
     },
-    "owner": "daniel_dekkers"
+    "owner": "daniel_dekkers",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }

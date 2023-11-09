@@ -1,42 +1,36 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import { Item } from '../data/model';
 import { useSelectedItems } from '../store/useSelectedItems';
 import { ItemImage } from './ItemImage';
+import { ImmutableArray } from '@hookstate/core';
 
 interface IItemCardProps {
   item: Item;
   width: number;
   height: number;
   showIndicator?: boolean;
+  selectedItemIds: ImmutableArray<string>;
+  onSelect: (id: string) => void
 }
-export const ItemCard: React.FC<IItemCardProps> = ({ item, width, height, showIndicator }) => {
-  const ref = useRef<Animatable.View & View>(null);
-  const { selectedItemIds, toggleSelection } = useSelectedItems();
-
-  const isSelected = selectedItemIds.includes(item.id);
-  const onPress = useCallback(() => {
-    ref?.current?.pulse?.(800);
-    toggleSelection(item.id);
-  }, [ref]);
+export const ItemCard: React.FC<IItemCardProps> = ({ item, width, height, selectedItemIds, onSelect }) => {
+  const isSelected = selectedItemIds?.includes(item.id);
   return (
-    <Animatable.View
+    <View
       style={{
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      ref={ref}>
-      <ItemImage
-        toggleSelection={onPress}
+      >
+       <ItemImage
+        onSelect={() => onSelect(item.id)}
         imageUrl={item.image_uri}
-        fallbackColor={item.color}
-        width={width}
-        height={height}
+        width={width || 0}
+        height={height || 0}
         isSelected={isSelected}
-        showIndicator={showIndicator}
         itemName={item.name}
+        fallbackColor={item.color}
       />
-    </Animatable.View>
+    </View>
   );
 };

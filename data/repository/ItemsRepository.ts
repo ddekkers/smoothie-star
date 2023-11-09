@@ -32,6 +32,7 @@ export class ItemsRepository {
       color,
       is_available: isAvailable,
       contains_allergens: containsAllergens,
+      price_category: 0
     });
     await this.ormRepository.save(item);
 

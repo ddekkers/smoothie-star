@@ -45,6 +45,7 @@ export class LoggedItemsRepository {
       WHERE name = "${name}"
       AND contains_allergens = "${containsAllergens ? 1 : 0}"
     `);
+    console.log({loggedItems})
     if (loggedItems.length <= 0) {
       return await this.create({ name, containsAllergens });
     }

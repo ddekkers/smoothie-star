@@ -3,20 +3,22 @@ import { useCallback, useEffect, useState } from "react";
 import { useDatabaseConnection } from "../data/connection";
 import { ICreateItemData, Item } from "../data/model";
 import { useInventory } from "./useInventory";
+import { useSelectedItems } from "./useSelectedItems";
 
 export const useItems = () => {
   const { itemsRepository } = useDatabaseConnection();
   const { inventory } = useInventory();
+  const { resetItemSelection } = useSelectedItems();
   const { items } = inventory;
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const initializeItems = async () => {
-      items.set((await itemsRepository?.getAll()) || []);
+      if (inventory.items.value.length < 1) {
+        items.set((await itemsRepository?.getAll()) || []);
+      }
+      setIsLoading(false);
     };
-    if (inventory.items.value.length < 1) {
-      initializeItems();
-    }
-    setIsLoading(false);
+    initializeItems();
   }, []);
 
   const getItemById = useCallback(async (id: string) => {
@@ -31,7 +33,7 @@ export const useItems = () => {
       containsAllergens = false,
       isAvailable = false,
     }: ICreateItemData) => {
-      console.log("calling create on items repo")
+      console.log("calling create on items repo");
       try {
         const item = await itemsRepository.create({
           name,
@@ -41,9 +43,8 @@ export const useItems = () => {
           containsAllergens,
         });
         items[items.length].set(item);
-        
       } catch (error) {
-        console.log("error on items repo", error)
+        console.log("error on items repo", error);
       }
     },
     [items]
@@ -62,10 +63,14 @@ export const useItems = () => {
   const toggleItemAvailability = useCallback(async (id: string) => {
     const index = items.findIndex((item: State<Item>) => item.value.id === id);
     if (index < 0) return;
-
+    const oldItem = items[index];
+    items[index].set({
+      ...oldItem.value,
+      is_available: !oldItem.is_available.value,
+    });
     const updatedItem = await itemsRepository.toggleItemAvailability(id);
     if (!updatedItem) return;
-
+    resetItemSelection();
     items[index].set(updatedItem);
   }, []);
 

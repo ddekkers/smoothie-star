@@ -30,26 +30,26 @@ export const CreateCategoryDialog: React.FC<ICreateCategoryDialogProps> = ({
 }) => {
   const { createCategory, categories } = useCategories();
   const [categoryName, setCategoryName] = useState("");
-  const [categoryColor, setCategoryColor] = useState(colors[0]);
+  const [categoryColor, setCategoryColor] = useState("");
   const [nameFieldIsFocused, setNameFieldIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isValidItem, setIsValidItem] = useState(true);
+  const [isValidName, setIsValidName] = useState(true);
   const resetDialog = useCallback(() => {
     setCategoryName("");
     setCategoryColor("");
   }, [setCategoryName, setCategoryColor]);
   useEffect(() => {
-    setIsValidItem(
+    setIsValidName(
       !!categoryName &&
-        !categories.find((item: Category) => item.name === categoryName)
+        !categories.find((item: Category) => item.name === categoryName.trim())
     );
-  }, [categoryName, setIsValidItem]);
+  }, [categoryName, setIsValidName]);
 
   const onCreateCategory = useCallback(async () => {
     setIsLoading(true);
     onFinish();
     createCategory({
-      name: categoryName,
+      name: categoryName.trim(),
       color: categoryColor,
     });
     resetDialog();
@@ -75,7 +75,7 @@ export const CreateCategoryDialog: React.FC<ICreateCategoryDialogProps> = ({
         value={categoryName}
         style={[
           dialogStyles.textField,
-          { color: !isValidItem ? Colors.alert : Colors.secondary },
+          { color: !isValidName ? Colors.alert : Colors.secondary },
         ]}
         h3
         floatingPlaceholder
@@ -91,7 +91,9 @@ export const CreateCategoryDialog: React.FC<ICreateCategoryDialogProps> = ({
           setCategoryName(event.nativeEvent.text)
         }
       />
-
+      {!isValidName && !!categoryName && (
+              <Text color={Colors.alert}>Name existiert bereits</Text>
+            )}
       <Text h3 style={dialogStyles.label}>
         {"Farbe"}
       </Text>
@@ -108,14 +110,14 @@ export const CreateCategoryDialog: React.FC<ICreateCategoryDialogProps> = ({
           <Icon size={40} name={"x"} color={Colors.secondary} />
         </Button>
         <Button
-          disabled={!isValidItem}
+          disabled={!isValidName || !categoryColor}
           style={dialogStyles.button}
           backgroundColor={Colors.tertiary}
-          onLongPress={() => {
-            for (let index = 0; index < 8; index++) {
-              onCreateCategory();
-            }
-          }}
+          // onLongPress={() => {
+          //   for (let index = 0; index < 8; index++) {
+          //     onCreateCategory();
+          //   }
+          // }}
           onPress={onCreateCategory}
         >
           {isLoading ? (
@@ -140,11 +142,11 @@ const dialogStyles = StyleSheet.create({
     height: 50,
     borderBottomWidth: 1,
     borderColor: Colors.secondary,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   textFieldPlaceholder: {
     width: "70%",
-    height: 30,
+    height: 50,
     lineHeight: 32,
     marginTop: 20,
     paddingBottom: 60,
@@ -161,7 +163,8 @@ const dialogStyles = StyleSheet.create({
     fontSize: 20,
   },
   label: {
-    color: Colors.secondary,
+    marginTop: 20,
+    color: Colors.contrast,
   },
   buttonsContainer: {
     justifyContent: "center",

@@ -43,15 +43,31 @@ export const usePrintLog = (): {
           name,
           contains_allergens
         );
-        loggedItems.push(newLoggedItem);
+        
+        // ensure, that items with identitcal name aren't logged twice
+        if ( 
+          loggedItems.filter(
+            (loggedItem) => loggedItem.id === newLoggedItem?.id
+          ).length <= 0
+        ) {
+          loggedItems.push(newLoggedItem);
+        }
       }
       const loggedCategories: Array<LoggedCategory> = [];
       for (const { name } of categories) {
         const newLoggedCategory =
           await loggedCategoryRepository.getOrCreateLoggedCategory(name);
-        loggedCategories.push(newLoggedCategory);
+
+        // ensure, that categories with identitcal name aren't logged twice
+        if (
+          loggedItems.filter(
+            (loggedItem) => loggedItem.id === newLoggedCategory?.id
+          ).length <= 0
+        ) {
+          loggedCategories.push(newLoggedCategory);
+        }
       }
-      console.log({printLogRepository})
+
       const printLog = await printLogRepository.create({
         items: loggedItems,
         categories: loggedCategories,

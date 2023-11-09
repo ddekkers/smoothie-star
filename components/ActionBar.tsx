@@ -6,18 +6,15 @@ import BottomSheet from "reanimated-bottom-sheet";
 import { useSelectedCategories } from "../store/useSelectedCategories";
 import { useSelectedItems } from "../store/useSelectedItems";
 import { IconButton } from "./IconButton";
-import { PrintLogList } from "./PrintLogList";
 import { useNavigation, useRouter } from "expo-router";
+import { Row } from "./Row";
+import { FloatingButton } from "./FloatingButton";
 
 interface IActionBarProps {
   onClickPrint: () => void;
 }
 
-const SNAP_POINTS = ["100%", 250];
-const INITIAL_SNAP_POINT = SNAP_POINTS.length - 1;
-export const ActionBar: React.FC<IActionBarProps> = ({
-  onClickPrint,
-}) => {
+export const ActionBar: React.FC<IActionBarProps> = ({ onClickPrint }) => {
   const { selectedItemIds, resetItemSelection } = useSelectedItems();
   const { resetCategorySelection } = useSelectedCategories();
 
@@ -29,29 +26,28 @@ export const ActionBar: React.FC<IActionBarProps> = ({
   const router = useRouter();
 
   return (
-    <View style={[{ flex: 1, alignItems: "center" }]}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingHorizontal: 30,
-        }}
-      >
+    <Row
+      style={{
+        // borderWidth: 3,
+        // height: 150,
+        width: "100%",
+        justifyContent: "center",
+        alignItems:"center",
+        marginBottom: 30,
 
-        <IconButton onPress={() => router.push("printlog")} name={"list"} />
-        <IconButton
-          primary
-          onPress={onClickPrint}
-          name={"printer"}
-          isDisabled={selectedItemIds.length <= 0}
-        />
-        <IconButton
-          onPress={resetSelection}
-          name={"x"}
-          isDisabled={selectedItemIds.length <= 0}
-        />
+        gap: 30
+      }}
+    >
+      <View >
+    <FloatingButton  icon={"list"} onPress={() => router.push("printlog")}/>
+        
       </View>
-    </View>
+      <View>
+    <FloatingButton primary icon={"print"} onPress={onClickPrint} isDisabled={selectedItemIds.length <= 0}/>
+      </View>
+      <View>
+    <FloatingButton icon={"undo"} onPress={resetSelection} isDisabled={selectedItemIds.length <= 0}/>
+      </View>
+    </Row>
   );
 };

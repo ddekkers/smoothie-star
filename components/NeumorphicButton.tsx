@@ -33,6 +33,7 @@ export const NeumorphicButton: React.FC<PropsWithChildren<INeumorphicButtonProps
             {
               width: buttonSize,
               height: buttonSize,
+              borderColor: Colors.shaddowLight,
               borderWidth: primary ? 1 : StyleSheet.hairlineWidth,
               borderRadius: primary ? 30 : buttonSize,
             },

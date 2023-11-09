@@ -1,3 +1,4 @@
+import Icon from "@expo/vector-icons/Feather";
 import * as FileSystem from "expo-file-system";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -7,16 +8,15 @@ import {
   TextInputChangeEventData,
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
-import TextField from "react-native-ui-lib/textField";
 import Button from "react-native-ui-lib/button";
+import Dialog from "react-native-ui-lib/dialog";
 import RadioButton from "react-native-ui-lib/radioButton";
 import RadioGroup from "react-native-ui-lib/radioGroup";
-import Checkbox from "react-native-ui-lib/checkbox";
-import Dialog from "react-native-ui-lib/dialog";
+import Switch from "react-native-ui-lib/switch";
 import Text from "react-native-ui-lib/text";
+import TextField from "react-native-ui-lib/textField";
+import TouchableOpacity from "react-native-ui-lib/touchableOpacity";
 import View from "react-native-ui-lib/view";
-import Icon from "@expo/vector-icons/Feather";
-import { colors } from "../constants/Colors";
 import { Item } from "../data/model";
 import { useItems } from "../store/useItems";
 import { ImageInfo } from "../types";
@@ -59,7 +59,7 @@ export const CreateItemDialog: React.FC<ICreateItemDialogProps> = ({
 }) => {
   const { createItem, items } = useItems();
   const [itemName, setItemName] = useState("");
-  const [itemColor, setItemColor] = useState(colors[0]);
+  const [itemColor, setItemColor] = useState(Colors.shaddowLight);
   const [containsAllergens, setContainsAllergens] = useState(false);
   const [nameFieldIsFocused, setNameFieldIsFocused] = useState(false);
   const [selectedImage, setSelectedImage] = useState<ImageInfo>();
@@ -71,7 +71,7 @@ export const CreateItemDialog: React.FC<ICreateItemDialogProps> = ({
 
   useEffect(() => {
     setIsValidItem(
-      !!itemName && !items.find((item: Item) => item.name === itemName)
+      !!itemName && !items.find((item: Item) => item.name === itemName.trim())
     );
   }, [itemName, setIsValidItem]);
 
@@ -84,7 +84,6 @@ export const CreateItemDialog: React.FC<ICreateItemDialogProps> = ({
     });
     setContainsAllergens(false);
   }, [setItemName, setItemColor, setSelectedImage, setContainsAllergens]);
-
   const onCreateItem = useCallback(async () => {
     setIsLoading(true);
     const imagePath = selectedImage?.imageUrl
@@ -92,7 +91,7 @@ export const CreateItemDialog: React.FC<ICreateItemDialogProps> = ({
       : "";
     onFinish();
     await createItem({
-      name: itemName,
+      name: itemName.trim(),
       color: itemColor,
       containsAllergens: containsAllergens,
       imageUri: imagePath,
@@ -155,19 +154,33 @@ export const CreateItemDialog: React.FC<ICreateItemDialogProps> = ({
       {!isValidItem && !!itemName && (
         <Text color={Colors.alert}>Name existiert bereits</Text>
       )}
-      <Checkbox
-        value={containsAllergens}
-        onValueChange={(val: boolean) => setContainsAllergens(val)}
-        label={"Enthält Allergene"}
-        labelStyle={dialogStyles.checkBoxLabel}
-        size={30}
-        color={Colors.tertiary}
-        containerStyle={dialogStyles.checkBoxContainer}
-        style={dialogStyles.checkBox}
-        iconColor={Colors.secondary}
-      />
+      <TouchableOpacity
+        onPress={() => setContainsAllergens((val) => !val)}
+        row
+        style={{
+          width: 320,
+          height: 100,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Switch
+          value={containsAllergens}
+          onValueChange={() => setContainsAllergens((val) => !val)}
+          onColor={Colors.tertiary}
+          offColor={Colors.primary}
+          thumbColor={Colors.secondary}
+          width={80}
+          height={38}
+          thumbSize={34}
+          style={{ borderWidth: 1, borderColor: Colors.secondary }}
+        />
+        <Text color={Colors.secondary} h4>
+          Enthält Allergene
+        </Text>
+      </TouchableOpacity>
       <View style={{ height: 420 }}>
-        <Text h3 style={{ color: Colors.secondary }}>
+        <Text h3 style={{ color: Colors.contrast }}>
           {"Darstellung"}
         </Text>
         <RadioGroup

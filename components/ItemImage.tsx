@@ -1,9 +1,12 @@
 import { BlurView } from "expo-blur";
-import React, { useCallback, useRef } from "react";
+
+import React, { useCallback, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import * as Animatable from "react-native-animatable";
 import { Colors } from "react-native-ui-lib";
 import Card from "react-native-ui-lib/card";
+import Text from "react-native-ui-lib/text";
+import { isEmbeddedLaunch } from "expo-updates";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 
 interface IItemImageProps {
   width: number;
@@ -11,8 +14,7 @@ interface IItemImageProps {
   imageUrl: string;
   fallbackColor?: string;
   isSelected?: boolean;
-  showIndicator?: boolean;
-  toggleSelection?: () => void;
+  onSelect?: () => void;
   itemName?: string;
 }
 export const ItemImage: React.FC<IItemImageProps> = ({
@@ -22,29 +24,22 @@ export const ItemImage: React.FC<IItemImageProps> = ({
   isSelected,
   fallbackColor,
   itemName,
-  toggleSelection,
+  onSelect,
 }) => {
-  const ref = useRef<Animatable.View & View>(null);
-
   const itemWidth = isSelected ? width * 0.9 : width;
-  const itemHeight = isSelected ? height * 0.85 : height;
+  const itemHeight = isSelected ? height * 0.9 : height;
 
-  const containerHeight = height * 0.9;
-  const onPress = useCallback(() => {
-    ref?.current?.pulse?.(800);
-    toggleSelection?.();
-  }, [ref]);
   return (
-    <Animatable.View
+    <View
       style={{
         alignItems: "center",
         justifyContent: "center",
-        height: containerHeight,
+        height,
+        width,
       }}
-      ref={ref}
     >
       <Card
-        onPress={onPress}
+        onPress={onSelect}
         selected={isSelected}
         selectionOptions={{
           hideIndicator: true,
@@ -53,8 +48,9 @@ export const ItemImage: React.FC<IItemImageProps> = ({
         containerStyle={{
           borderRadius: 16,
           shadowColor: "#000",
-          width: itemWidth,
           marginBottom: 10,
+          width: itemWidth,
+          height: itemHeight,
           shadowOffset: {
             width: 0,
             height: 8,
@@ -84,8 +80,9 @@ export const ItemImage: React.FC<IItemImageProps> = ({
             },
           }}
           height={itemHeight}
+          width={itemWidth}
           content={[
-            { text: itemName, text30: true, primary: true, center: true },
+            { text: !isSelected?itemName:"", text30: true, primary: true, center: true },
           ]}
           contentStyle={[
             {
@@ -94,7 +91,7 @@ export const ItemImage: React.FC<IItemImageProps> = ({
               bottom: 0,
               position: "absolute",
               backgroundColor: !!itemName
-                ? Colors.rgba(Colors.secondary, 0.6)
+                ? Colors?.rgba(Colors.secondary, 0.6)
                 : "transparent",
             },
             isSelected && { height: "100%", justifyContent: "center" },
@@ -108,13 +105,20 @@ export const ItemImage: React.FC<IItemImageProps> = ({
               StyleSheet.absoluteFill,
 
               {
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
                 borderRadius: 10,
                 overflow: "hidden",
               },
             ]}
-          />
+          >
+            <Text primary text30 center style={{}}>
+              {itemName}
+            </Text>
+          </BlurView>
         )}
       </Card>
-    </Animatable.View>
+    </View>
   );
 };

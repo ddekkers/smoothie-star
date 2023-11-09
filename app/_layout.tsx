@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import * as SplashScreen from "expo-splash-screen";
 import * as Sentry from "sentry-expo";
 import Feather from "@expo/vector-icons/Feather";
 import {
@@ -6,11 +8,13 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Pressable, useColorScheme } from "react-native";
 import { DatabaseConnectionProvider } from "../data/connection";
-import { Colors } from "react-native-ui-lib";
+import { Colors, Config } from "react-native-ui-lib";
+import "../components/Themed";
+Config.setConfig({ appScheme: "default" });
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -23,9 +27,9 @@ export const unstable_settings = {
 };
 
 Sentry.init({
-  dsn: "https://c74dee1bb74d4913b8ba59c5f5a55448@o244067.ingest.sentry.io/1420596",
-  enableInExpoDevelopment: true,
-  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  dsn: "https://92ac3e0270a797951042de17b060e261@o244067.ingest.sentry.io/4506076741894144",
+  enableInExpoDevelopment: false,
+  debug: __DEV__, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -44,7 +48,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync();
     }
   }, [loaded]);
 
@@ -59,7 +63,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <DatabaseConnectionProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

@@ -13,13 +13,13 @@ export const useSelectedItems = () => {
     }
   };
 
-  const resetItemSelection = useCallback(async () => {
+  const resetItemSelection = useCallback(() => {
     selectedItemIds.set([]);
   }, [selectedItemIds]);
 
   return {
     toggleSelection,
     resetItemSelection,
-    selectedItemIds: selectedItemIds.get({ noproxy: true }),
+    selectedItemIds: selectedItemIds.get(),
   };
 };

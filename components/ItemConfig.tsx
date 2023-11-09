@@ -3,10 +3,11 @@ import { createRef, useCallback, useRef, useState } from "react";
 import {
   FlatList,
   NativeSyntheticEvent,
+  ScrollView,
   StyleSheet,
   TextInputChangeEventData,
 } from "react-native";
-import { Colors, Incubator, TextFieldRef } from "react-native-ui-lib";
+import { Colors, Incubator } from "react-native-ui-lib";
 import Button from "react-native-ui-lib/button";
 import ListItem from "react-native-ui-lib/listItem";
 import Text from "react-native-ui-lib/text";
@@ -20,6 +21,9 @@ import { Item } from "../data/model";
 import { useItems } from "../store/useItems";
 import { ImmutableArray } from "@hookstate/core";
 import { MAX_AVAILABLE_ITEMS_COUNT } from "../const";
+import { NeumorphicButton } from "./NeumorphicButton";
+import { IconButton } from "./IconButton";
+import { Row } from "./Row";
 
 interface IItemConfigScreenProps {}
 
@@ -49,12 +53,7 @@ const renderItem = (
       >
         <ListItem.Part left containerStyle={styles.imageContainer}>
           {item.image_uri ? (
-            <ItemImage
-              imageUrl={item.image_uri}
-              width={70}
-              height={70}
-              isSelected={false}
-            />
+            <ItemImage imageUrl={item.image_uri} width={70} height={70} />
           ) : (
             <View
               style={{
@@ -99,7 +98,6 @@ const prepareData = (items: ImmutableArray<Item>, searchText: string) => {
     .filter((item) => {
       const itemLetters = item.name.toLowerCase().split("");
       return searchLetters.every((letter) => itemLetters.includes(letter));
-      // item.name.toLowerCase().includes(searchText.toLowerCase());
     });
 };
 
@@ -207,20 +205,37 @@ export const ItemConfig: React.FC<IItemConfigScreenProps> = ({ ...props }) => {
         keyExtractor={(item) => item.id}
         style={{ width: "100%" }}
       />
+      {/* <ScrollView>
+        <Text>{"Config15"}</Text>
+      </ScrollView> */}
 
       {/* -------- Floating Components -------- */}
-      <View style={{ position: "absolute", right: 100, bottom: 230 }}>
-        <FloatingButton icon={"search"} onPress={focusSearchField} />
-      </View>
-      <View style={{ position: "absolute", right: 100, bottom: 130 }}>
-        <FloatingButton icon={"x"} onPress={() => setShowResetDialog(true)} />
-      </View>
-      <View style={{ position: "absolute", right: 100, bottom: 30 }}>
-        <FloatingButton
-          icon={"plus"}
-          onPress={() => setShowCreateItemDialog(true)}
-        />
-      </View>
+      <Row
+        style={{
+          // height: 130,
+          position: "absolute",
+          right: 50,
+          bottom: 30,
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <View>
+          <FloatingButton icon={"search"} onPress={focusSearchField} />
+        </View>
+        <View>
+          <FloatingButton
+            icon={"undo"}
+            onPress={() => setShowResetDialog(true)}
+          />
+        </View>
+        <View>
+          <FloatingButton
+            icon={"plus"}
+            onPress={() => setShowCreateItemDialog(true)}
+          />
+        </View>
+      </Row>
       <CreateItemDialog
         isVisible={showCreateItemDialog}
         onFinish={onCloseDialog}
@@ -266,8 +281,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
     backgroundColor: Colors.primary,
   },
   imageContainer: {
@@ -288,9 +303,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: Colors.contrast,
     marginBottom: 20,
+    backgroundColor: Colors.primary,
   },
   searchTextFieldContainer: {
     paddingHorizontal: 20,
+    backgroundColor: Colors.primary,
     paddingTop: 30,
   },
 });

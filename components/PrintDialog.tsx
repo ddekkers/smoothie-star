@@ -6,6 +6,7 @@ import Chip from "react-native-ui-lib/chip";
 import Switch from "react-native-ui-lib/switch";
 import Dialog from "react-native-ui-lib/dialog";
 import Text from "react-native-ui-lib/text";
+import TouchableOpacity from "react-native-ui-lib/touchableOpacity";
 import View from "react-native-ui-lib/view";
 import Icon from "@expo/vector-icons/Feather";
 import { useCategories } from "../store/useCategories";
@@ -46,6 +47,7 @@ export const PrintDialog: React.FC<IPrintDialogProps> = ({
       visible={isVisible}
       containerStyle={{ ...dialogStyles.container }}
       onDismiss={onCancel}
+      overlayBackgroundColor={Colors.primary}
     >
       {hasCategorySelection && categories.length > 0 && (
         <>
@@ -75,7 +77,7 @@ export const PrintDialog: React.FC<IPrintDialogProps> = ({
                   backgroundColor={isSelected ? Colors.primary : color}
                   label={name}
                   labelStyle={{
-                    color: isSelected ? Colors.secondary : Colors.primary,
+                    color: isSelected ? Colors.contrast : Colors.primary,
                     fontSize: 32,
                     lineHeight: 36,
                   }}
@@ -85,7 +87,7 @@ export const PrintDialog: React.FC<IPrintDialogProps> = ({
                     paddingHorizontal: 15,
                     height: 80,
                     borderWidth: isSelected ? 2 : 0,
-                    borderColor: Colors.secondary,
+                    borderColor: isSelected ? Colors.contrast : Colors.secondary,
                   }}
                   onPress={() => toggleCategorySelection(id)}
                 />
@@ -102,7 +104,8 @@ export const PrintDialog: React.FC<IPrintDialogProps> = ({
           />
         </>
       )}
-      <View
+      <TouchableOpacity
+        onPress={() => toggleHasPrintOffset()}
         row
         style={{
           width: 260,
@@ -111,9 +114,6 @@ export const PrintDialog: React.FC<IPrintDialogProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <Text color={Colors.secondary} h4>
-          Mit Lochung
-        </Text>
         <Switch
           value={hasPrintOffset}
           onValueChange={() => toggleHasPrintOffset()}
@@ -124,16 +124,11 @@ export const PrintDialog: React.FC<IPrintDialogProps> = ({
           height={38}
           thumbSize={34}
           style={{ borderWidth: 1, borderColor: Colors.secondary }}
-          // size={200}
-          backgroundColor={hasPrintOffset ? "transparent" : Colors.primary}
-          // containerStyle={{
-          //   marginBottom: 30,
-          //   marginTop: 45,
-          //   borderWidth: hasPrintOffset ? 1 : 0,
-          //   borderColor: Colors.secondary,
-          // }}
         />
-      </View>
+        <Text color={Colors.secondary} h4>
+          Mit Lochung
+        </Text>
+      </TouchableOpacity>
       <View style={dialogStyles.buttonsContainer}>
         <Button
           style={dialogStyles.button}

@@ -59,7 +59,7 @@ export const ImageSelector: React.FC<IImageSelectorProps> = ({
                   width={130}
                   height={130}
                   isSelected={imageUrl === selectedImage?.imageUrl}
-                  toggleSelection={() =>
+                  onSelect={() =>
                     onSelectImage({ imageUrl, photographer })
                   }
                 />

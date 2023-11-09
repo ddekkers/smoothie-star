@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import moment from 'moment';
 import 'moment/locale/de';
 import { useCallback, useEffect } from 'react';
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { PrintLog } from '../data/model';
 import { usePrintLog } from './usePrintLog';
 import { useItems } from './useItems';
@@ -15,6 +15,7 @@ import { PrintCategory, PrintItem } from '../types';
 import { useCategories } from './useCategories';
 import { LOGO_SVG } from '../static/logo';
 import { ImmutableArray, ImmutableObject } from '@hookstate/core';
+import { shareAsync } from 'expo-sharing';
 
 type PrintData = {
   items: Array<PrintItem>;
@@ -45,7 +46,7 @@ const createAllergensInfoHtml = () =>
 const createCategoriesInfoHtml = (categories: Array<PrintCategory>) =>
   categories.length < 1
     ? ''
-    : `<p style="font-size: 32px; color: #5e9ca0; text-align: center;"><span
+    : `<p style="font-size: 32px; color: #5e9ca0;"><span
       style="color: #000000;"><strong>Geschmack:</strong> ${categories
         .map((cat) => cat.name)
         .join(', ')}</span></p>`;
@@ -115,18 +116,21 @@ export const usePrintData = () => {
       const now = moment().locale('de');
       const printData = await resolvePrintData(now, items, categories);
       await Asset.loadAsync(require(PRINT_HTML_PATH));
-      const htmlAsset = Asset.fromModule(require(PRINT_HTML_PATH));
-      if (htmlAsset.localUri) {
-        const htmlAsString = await FileSystem.readAsStringAsync(htmlAsset.localUri);
+      const htmlAsset = await Asset.fromModule(require(PRINT_HTML_PATH)).downloadAsync();
+      if (htmlAsset.localUri || htmlAsset.uri) {
+        const htmlAsString = await FileSystem.readAsStringAsync(htmlAsset.localUri || htmlAsset.uri);
 
         const html = resolveHtml(htmlAsString, printData, LOGO_SVG, hasOffset);
 
         const printUrl = resolvePrintUrl(html);
         try {
           await Linking.openURL(printUrl);
-        } catch {
+        } catch (e){
           try {
-            await Print.printAsync({ html });
+            await Print.printAsync({html})
+
+            // const file = await Print.printToFileAsync({html})
+            // await shareAsync(file.uri, { UTI: '.pdf', mimeType: 'application/pdf' })
           } catch (e) {
             console.log('Error printing...', e);
           }
